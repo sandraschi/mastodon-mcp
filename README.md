@@ -4,13 +4,16 @@
   <a href="https://github.com/casey/just"><img src="https://img.shields.io/badge/just-ready_to_go-7c5cfc?style=flat-square&logo=just&logoColor=white" alt="Just"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.13+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <a href="https://github.com/PrefectHQ/fastmcp"><img src="https://img.shields.io/badge/FastMCP-3.4%2B-7c5cfc?style=flat-square" alt="FastMCP"></a>
+  <a href="https://github.com/sandraschi/mastodon-mcp/actions"><img src="https://img.shields.io/github/actions/workflow/status/sandraschi/mastodon-mcp/ci.yml?branch=master&style=flat-square" alt="CI"></a>
+  <a href="https://joinmastodon.org/"><img src="https://img.shields.io/badge/Fediverse-ActivityPub-6364FF?style=flat-square" alt="ActivityPub"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow?style=flat-square" alt="MIT"></a>
 </p>
 
-Fediverse **Mastodon client** (ActivityPub) for the sandraschi fleet — full webapp + MCP agent automation, including a **human-approved outbox** for promotion drafts from `fleet-public-relations-mcp`.
+Fediverse **Mastodon client** (ActivityPub) — full webapp + MCP agent automation, including a **human-approved outbox** for promotion drafts from `fleet-public-relations-mcp`.
 
-**v0.1.1** · Private · Ports **10754** / **10755** · Sibling of [discord-mcp](https://github.com/sandraschi/discord-mcp) · AT Proto sibling [bluesky-mcp](https://github.com/sandraschi/bluesky-mcp)
+**v0.1.1** · Ports **10754** / **10755** · Sibling of [discord-mcp](https://github.com/sandraschi/discord-mcp) · AT Proto sibling [bluesky-mcp](https://github.com/sandraschi/bluesky-mcp)
 
-> FastMCP 3.4+ · full portmanteau (reply/boost/media/webhooks) · SOTA webapp · dry-run default · Windows CI workflow + local `just ci`
+> FastMCP 3.4+ · full portmanteau (reply/boost/media/webhooks) · SOTA webapp · dry-run default · Windows CI + local `just ci`
 
 > Mastodon = ActivityPub. **Not** Bluesky. Primer: [docs/FEDIVERSE.md](docs/FEDIVERSE.md).
 
