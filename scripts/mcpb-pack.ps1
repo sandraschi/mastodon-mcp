@@ -20,6 +20,29 @@ if (-not (Test-Path (Join-Path $RepoRoot "manifest.json"))) {
     exit 1
 }
 
+# 3-4-100 prompt gate (HARD)
+function Word-Count([string]$Path) {
+    (@(Get-Content -Raw $Path) -split '\s+' | Where-Object { $_ }).Count
+}
+$promptDir = Join-Path $RepoRoot "assets\prompts"
+$sysPath = Join-Path $promptDir "system.md"
+$userPath = Join-Path $promptDir "user.md"
+$exPath = Join-Path $promptDir "examples.json"
+foreach ($p in @($sysPath, $userPath, $exPath)) {
+    if (-not (Test-Path $p)) {
+        Write-Host "ERROR: missing 3-4-100 prompt file: $p" -ForegroundColor Red
+        exit 1
+    }
+}
+$sysWords = Word-Count $sysPath
+$userWords = Word-Count $userPath
+$exCount = (Get-Content $exPath -Raw | ConvertFrom-Json).Count
+if ($sysWords -lt 3000 -or $userWords -lt 4000 -or $exCount -lt 100) {
+    Write-Host "ERROR: 3-4-100 FAIL system=$sysWords user=$userWords examples=$exCount (need 3000/4000/100)" -ForegroundColor Red
+    exit 1
+}
+Write-Host "3-4-100 OK: system=$sysWords user=$userWords examples=$exCount" -ForegroundColor Green
+
 New-Item -ItemType Directory -Force -Path dist | Out-Null
 New-Item -ItemType Directory -Force -Path $mcpbRoot | Out-Null
 
