@@ -1,0 +1,35 @@
+{
+  "manifest_version": "0.2",
+  "name": "mastodon-mcp",
+  "version": "0.1.0",
+  "description": "FastMCP 3.4+ Fediverse (Mastodon) bridge with human-approved outbox for fleet-PR drafts",
+  "author": {
+    "name": "Sandra Schieder"
+  },
+  "server": {
+    "type": "python",
+    "entry_point": "src/mastodon_mcp/__main__.py",
+    "mcp_config": {
+      "command": "uv",
+      "args": ["run", "--directory", "${PWD}", "python", "-m", "mastodon_mcp"],
+      "env": {
+        "PYTHONPATH": "${PWD}/src",
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "mastodon_social_tool",
+      "description": "Portmanteau: post, timeline, outbox_enqueue/approve/publish — dry-run default"
+    },
+    {
+      "name": "mastodon_help",
+      "description": "Help for mastodon-mcp operations and outbox flow"
+    },
+    {
+      "name": "mastodon_shutdown",
+      "description": "Graceful shutdown signal"
+    }
+  ]
+}

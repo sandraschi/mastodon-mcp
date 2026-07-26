@@ -1,38 +1,35 @@
 # mastodon-mcp — Agent Guide
 
-Fleet MCP server (Comms / Fediverse lane). Scaffold only until v0.1 implementation.
+Fleet MCP server (Comms / Fediverse). Private until `.nopublish` lifted.
 
 ## Overview
 
-Mastodon (ActivityPub) bridge with human-approved outbox for `fleet-public-relations-mcp` drafts. Ports **10754** / **10755**. Modeled on `discord-mcp` (10756/10757).
+FastMCP 3.4+ Mastodon bridge — human-approved outbox for `fleet-public-relations-mcp` drafts. Ports **10754** / **10755**. Pattern sibling of discord-mcp.
 
 ## Standards
 
-- FastMCP 3.x portmanteau: `mastodon_social(operation=…)`
-- Responses: `{success, message, …}`
-- Dual transport: stdio + HTTP `/mcp`
-- Dry-run default; never auto-post
-- Private repo until Sandra says otherwise (`.nopublish`)
+- FastMCP 3.4.4+ portmanteau + skills + prompt + Prefab card
+- Dual transport: HTTP `/mcp` + REST; dry-run default
+- MCPB: `just mcpb-pack` · Tauri scaffold: `src-tauri/` (icons + PyInstaller before native)
+- **No** GitHub Actions while private
+- Tone: FLEET_PROMOTION.md
 
 ## Key files
 
 | Path | Role |
 |------|------|
-| `README.md` | User-facing overview |
-| `PRD.md` | Requirements + payload contract |
-| `.env.example` | Instance + token + dry_run |
-| `src/` | Not yet — implement after approved plan |
+| `src/mastodon_mcp/server.py` | FastAPI + FastMCP |
+| `src/mastodon_mcp/portmanteau.py` | mastodon_social ops |
+| `src/mastodon_mcp/outbox.py` | SQLite outbox |
+| `webapp/` | Dark UI + Playwright e2e |
+| `INSTALL.md` / `llms.txt` / `llms-full.txt` | Install + LLM manifests |
+| `manifest.json` / `glama.json` | MCPB + discovery metadata |
 
-## Do not
-
-- Call Mastodon API from `fleet-public-relations-mcp` inline — handoff to this outbox only
-- Use `glama-status-mcp` for grades — use `scraper-mcp` (10998)
-- Post Bluesky here
-
-## Quick ref (when implemented)
+## Quick ref
 
 ```powershell
 .\start.ps1
-just test
-just lint
+uv run pytest tests/ -q
+cd webapp; npm run test:e2e
+just mcpb-pack
 ```

@@ -1,0 +1,29 @@
+# Logic/Dev Bloat
+.venv/
+node_modules/
+__pycache__/
+.ruff_cache/
+.pytest_cache/
+tests/
+
+# Discovery & Fleet Metadata
+glama.json
+llms.txt
+llms-full.txt
+.git/
+.github/
+.vscode/
+
+# Build Artifacts
+dist/
+build/
+*.mcpb
+src-tauri/target/
+src-tauri/binaries/
+src-tauri/resources/*.exe
+
+# Non-MCP components (webapp, native, scripts)
+src-tauri/
+webapp/
+scripts/
+data/

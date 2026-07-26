@@ -11,6 +11,11 @@ dist/
 data/
 webapp/node_modules/
 webapp/dist/
+src-tauri/target/
+src-tauri/binaries/
+src-tauri/resources/*.exe
+src-tauri/gen/
+*.mcpb
 *.bak
 reports/
 .DS_Store

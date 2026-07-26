@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "name": "mastodon-mcp",
+  "description": "FastMCP 3.4 Mastodon/Fediverse bridge with human-approved outbox for fleet-PR drafts. Dry-run default.",
+  "version": "0.1.0",
+  "categories": ["messaging", "comms", "fediverse", "promotion"],
+  "visibility": "private",
+  "tools": [
+    "mastodon_social_tool",
+    "mastodon_help",
+    "mastodon_shutdown"
+  ],
+  "transport": {
+    "type": "streamable-http",
+    "url": "http://127.0.0.1:10754/mcp"
+  },
+  "rest": {
+    "base_url": "http://127.0.0.1:10754",
+    "health": "/api/health"
+  },
+  "webapp": {
+    "url": "http://127.0.0.1:10755"
+  }
+}

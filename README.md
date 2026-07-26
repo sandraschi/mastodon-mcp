@@ -3,12 +3,14 @@
 <p align="center">
   <a href="https://github.com/casey/just"><img src="https://img.shields.io/badge/just-ready_to_go-7c5cfc?style=flat-square&logo=just&logoColor=white" alt="Just"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.13+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
-  <a href="https://github.com/PrefectHQ/fastmcp"><img src="https://img.shields.io/badge/FastMCP-3.2-7c5cfc?style=flat-square" alt="FastMCP"></a>
+  <a href="https://github.com/PrefectHQ/fastmcp"><img src="https://img.shields.io/badge/FastMCP-3.4%2B-7c5cfc?style=flat-square" alt="FastMCP"></a>
 </p>
 
 Fediverse (Mastodon / ActivityPub) bridge for the sandraschi fleet — compose, timelines, and a **human-approved outbox** for promotion drafts from `fleet-public-relations-mcp`.
 
-**v0.1.0 (scaffold)** · Private until released · Ports **10754** / **10755** · Pattern sibling of [discord-mcp](https://github.com/sandraschi/discord-mcp) (10756/10757)
+**v0.1.0** · Private · Ports **10754** / **10755** · Pattern sibling of [discord-mcp](https://github.com/sandraschi/discord-mcp) (10756/10757)
+
+> FastMCP 3.4+ · outbox REST · dark webapp · pytest + Playwright e2e · MCPB · Tauri/NSIS scaffold · dry-run default. Reply/boost/media still stubs.
 
 > Mastodon = ActivityPub microblogging. **Not** Bluesky (AT Protocol — separate later).
 
@@ -118,8 +120,23 @@ Dashboard: http://127.0.0.1:10755 · MCP: http://127.0.0.1:10754/mcp
 
 ---
 
-## Status
+## Tests
 
-Scaffold only (this README + PRD). Implementation tracks discord-mcp: FastMCP 3.x portmanteau, Starlette/FastAPI REST, Vite React dark webapp, `start.ps1`, justfile.
+```powershell
+uv run pytest tests/ -q          # unit + API e2e (TestClient)
+cd webapp; npm run test:e2e      # Playwright: health, outbox handoff, notifications inbox, Compose UI
+```
 
-See [PRD.md](PRD.md).
+Coverage includes fleet-PR inbound payload → outbox → approve → dry-run publish, and notifications inbox (empty under dry-run without tokens).
+
+---
+
+## Packaging / native
+
+| Artifact | Command |
+|----------|---------|
+| MCPB | `just mcpb-pack` → `dist/mastodon-mcp-v0.1.0.mcpb` |
+| Tauri/NSIS | scaffold in `src-tauri/` — icons + `mastodon-mcp-backend.spec` before `just build-native` |
+| CI | **None** while private (`.nopublish`) |
+
+See [INSTALL.md](INSTALL.md) · [PRD.md](PRD.md) · [llms-full.txt](llms-full.txt).

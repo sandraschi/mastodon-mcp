@@ -1,0 +1,79 @@
+# mastodon-mcp — full LLM context
+
+## Purpose
+
+Private FastMCP 3.4+ Mastodon (ActivityPub) bridge. Primary job: hold a **human-approved outbox** for promotion drafts from `fleet-public-relations-mcp`, then publish (dry-run by default).
+
+Not Bluesky. Not auto-post from CI or scraper-mcp.
+
+## Ports
+
+| Service | Port |
+|---------|------|
+| Backend REST + MCP `/mcp` | 10754 |
+| Vite dark webapp | 10755 |
+
+## Tools
+
+### mastodon_social_tool (portmanteau)
+
+Operations: `post`, `reply`, `boost`, `upload_media`, `timeline`, `notifications`, `outbox_list`, `outbox_enqueue`, `outbox_approve`, `outbox_publish`, `outbox_reject`, `accounts_list`.
+
+Fleet path: `outbox_enqueue` → human `outbox_approve` → `outbox_publish` (respects `MASTODON_DRY_RUN`).
+
+Direct `post` blocked when `MASTODON_REQUIRE_OUTBOX_APPROVAL=1` unless `outbox_id` set.
+
+### mastodon_help / mastodon_shutdown
+
+Help dict and shutdown ack.
+
+## REST
+
+- `GET /api/health`, `/api/v1/health`
+- `POST /api/v1/outbox` — fleet-PR `mastodon_payload.json`
+- `GET /api/v1/outbox?status=`
+- `POST /api/v1/outbox/{id}/approve|reject|publish`
+- `GET /api/v1/timeline?kind=home|local|public`
+- `GET /api/v1/notifications` — inbox (dry empty without tokens)
+
+## Payload (fleet-PR)
+
+```json
+{
+  "schema_version": 1,
+  "source": "fleet-public-relations-mcp",
+  "repo_id": "mixx-dj-mcp",
+  "campaign": "...",
+  "status_text": "...",
+  "visibility": "public",
+  "idempotency_key": "..."
+}
+```
+
+## Env
+
+| Var | Default | Notes |
+|-----|---------|-------|
+| MASTODON_INSTANCE | — | e.g. https://mastodon.social |
+| MASTODON_ACCESS_TOKEN | — | write:statuses |
+| MASTODON_DRY_RUN | 1 | Keep on until intentional live post |
+| MASTODON_REQUIRE_OUTBOX_APPROVAL | 1 | |
+| MASTODON_BACKEND_PORT | 10754 | |
+| MASTODON_DATA_DIR | data/ | SQLite outbox |
+
+## Tone
+
+Follow `mcp-central-docs/standards/FLEET_PROMOTION.md`. Ban hype and “written by AI” authorship theater. Architecture/tools/mild competition OK.
+
+## Tests
+
+```powershell
+uv run pytest tests/ -q
+cd webapp; npm run test:e2e
+```
+
+## Packaging
+
+- `just mcpb-pack` → `dist/mastodon-mcp-v0.1.0.mcpb`
+- Tauri/NSIS scaffold under `src-tauri/` (icons + PyInstaller spec before `just build-native`)
+- No private-repo GitHub Actions
