@@ -23,6 +23,7 @@ dist/
 build/
 *.mcpb
 *.bak
+*.bak.*
 *.orig
 *.rej
 mcpb/src/
