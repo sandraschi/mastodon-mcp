@@ -83,3 +83,44 @@ def test_timeline_unconfigured(client):
     assert r.status_code == 200
     # no credentials → not configured
     assert r.json().get("success") is False
+
+
+def test_dashboard_stats(client):
+    r = client.get("/api/dashboard")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["success"] is True
+    assert "pending" in body
+    assert "total" in body
+    assert body["dry_run"] is True
+
+
+def test_skills_and_tools_apis(client):
+    skills = client.get("/api/skills")
+    assert skills.status_code == 200
+    assert "skills" in skills.json()
+    tools = client.get("/api/tools")
+    assert tools.status_code == 200
+    names = [t["name"] for t in tools.json()["tools"]]
+    assert "mastodon_social_tool" in names
+
+
+def test_llm_providers_and_logs(client):
+    prov = client.get("/api/llm/providers")
+    assert prov.status_code == 200
+    assert "providers" in prov.json()
+    logs = client.get("/api/logs")
+    assert logs.status_code == 200
+    assert "entries" in logs.json()
+
+
+def test_webhook_inbound_dry(client):
+    r = client.post(
+        "/api/v1/webhooks/inbound",
+        json={"source": "test", "event_type": "ping", "payload": {"ok": True}},
+    )
+    assert r.status_code == 200
+    assert r.json()["success"] is True
+    listed = client.get("/api/v1/webhooks")
+    assert listed.status_code == 200
+    assert listed.json()["count"] >= 1

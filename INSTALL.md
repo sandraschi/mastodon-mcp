@@ -2,6 +2,8 @@
 
 Private fleet Fediverse bridge — human-approved outbox for `fleet-public-relations-mcp` drafts.
 
+> **First time?** Complete [docs/ONBOARDING.md](docs/ONBOARDING.md) before expecting live Mastodon calls (account, token, money/CC honesty, pitfalls).
+
 ## Prerequisites
 
 | Tool | Purpose | Install (Windows) |

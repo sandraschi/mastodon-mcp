@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from mastodon_mcp.portmanteau import mastodon_social
@@ -53,9 +55,50 @@ async def test_notifications_and_accounts(isolated_data):
 
 
 @pytest.mark.asyncio
-async def test_unknown_and_stub_ops(isolated_data):
-    stub = await mastodon_social(operation="boost")
-    assert stub.get("planned") is True
+async def test_reply_boost_media_dry_run(isolated_data, tmp_path: Path):
+    reply = await mastodon_social(
+        operation="reply",
+        in_reply_to_id="123",
+        status_text="thanks",
+        dry_run=True,
+    )
+    assert reply["success"] is True
+    assert reply["dry_run"] is True
+    assert reply.get("in_reply_to_id") == "123"
+
+    boost = await mastodon_social(operation="boost", status_id="456", dry_run=True)
+    assert boost["success"] is True
+    assert boost["dry_run"] is True
+
+    media_file = tmp_path / "pic.png"
+    media_file.write_bytes(b"\x89PNG\r\n\x1a\n")
+    up = await mastodon_social(
+        operation="upload_media",
+        media_path=str(media_file),
+        media_description="test",
+        dry_run=True,
+    )
+    assert up["success"] is True
+    assert up["id"] == "dry-run-media"
+
+
+@pytest.mark.asyncio
+async def test_webhook_ops(isolated_data):
+    recv = await mastodon_social(
+        operation="webhook_receive",
+        source="fleet-pr",
+        event_type="draft.queued",
+        payload={"repo_id": "mixx-dj-mcp"},
+    )
+    assert recv["success"] is True
+    listed = await mastodon_social(operation="webhook_list")
+    assert listed["count"] >= 1
+    push = await mastodon_social(operation="push_subscription_get")
+    assert push["success"] is True
+
+
+@pytest.mark.asyncio
+async def test_unknown_op(isolated_data):
     bad = await mastodon_social(operation="dance")
     assert bad["success"] is False
     assert "operations" in bad

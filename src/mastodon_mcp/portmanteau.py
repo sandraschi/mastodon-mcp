@@ -1,4 +1,4 @@
-"""mastodon_social portmanteau tool."""
+"""mastodon_social portmanteau tool — full ops, no planned stubs."""
 
 from __future__ import annotations
 
@@ -6,19 +6,32 @@ from typing import Annotated, Any
 
 from pydantic import Field
 
-from mastodon_mcp import client, outbox
+from mastodon_mcp import client, outbox, webhooks
 from mastodon_mcp.config import get_settings
+
+OPS = [
+    "post",
+    "reply",
+    "boost",
+    "upload_media",
+    "timeline",
+    "notifications",
+    "outbox_list",
+    "outbox_enqueue",
+    "outbox_approve",
+    "outbox_publish",
+    "outbox_reject",
+    "accounts_list",
+    "webhook_list",
+    "webhook_receive",
+    "push_subscription_get",
+]
 
 
 async def mastodon_social(
     operation: Annotated[
         str,
-        Field(
-            description=(
-                "post|reply|boost|upload_media|timeline|notifications|"
-                "outbox_list|outbox_enqueue|outbox_approve|outbox_publish|outbox_reject|accounts_list"
-            )
-        ),
+        Field(description="|".join(OPS)),
     ],
     status_text: str = "",
     outbox_id: int = 0,
@@ -27,8 +40,15 @@ async def mastodon_social(
     payload: dict[str, Any] | None = None,
     reason: str = "",
     dry_run: bool | None = None,
+    status_id: str = "",
+    in_reply_to_id: str = "",
+    media_path: str = "",
+    media_description: str = "",
+    media_ids: list[str] | None = None,
+    event_type: str = "generic",
+    source: str = "agent",
 ) -> dict[str, Any]:
-    """Unified Mastodon / outbox operations. Fleet drafts must go through outbox approve → publish."""
+    """Unified Mastodon / outbox / webhook operations. Fleet drafts: outbox approve → publish."""
     op = operation.strip().lower()
     cfg = get_settings()
 
@@ -88,20 +108,29 @@ async def mastodon_social(
             return await mastodon_social(
                 operation="outbox_publish", outbox_id=outbox_id, dry_run=dry_run
             )
-        return await client.create_status(status_text, visibility=visibility, dry_run=dry_run)
+        return await client.create_status(
+            status_text,
+            visibility=visibility,
+            media_ids=media_ids,
+            dry_run=dry_run,
+        )
+
+    if op == "reply":
+        sid = in_reply_to_id or status_id
+        return await client.reply_status(sid, status_text, visibility=visibility, dry_run=dry_run)
+
+    if op == "boost":
+        sid = status_id or in_reply_to_id
+        return await client.boost_status(sid, dry_run=dry_run)
+
+    if op == "upload_media":
+        return await client.upload_media(media_path, description=media_description, dry_run=dry_run)
 
     if op == "timeline":
         return await client.get_timeline(timeline)
 
     if op == "notifications":
         return await client.get_notifications()
-
-    if op in ("reply", "boost", "upload_media"):
-        return {
-            "success": False,
-            "error": f"{op} stubbed in v0.1 — use outbox + post path first",
-            "planned": True,
-        }
 
     if op == "accounts_list":
         return {
@@ -115,21 +144,19 @@ async def mastodon_social(
             ],
         }
 
+    if op == "webhook_list":
+        return webhooks.list_events()
+
+    if op == "webhook_receive":
+        if not payload:
+            return {"success": False, "error": "payload required"}
+        return webhooks.enqueue_event(source or "agent", event_type, payload)
+
+    if op == "push_subscription_get":
+        return await client.push_subscription_get()
+
     return {
         "success": False,
         "error": f"unknown operation {operation!r}",
-        "operations": [
-            "post",
-            "reply",
-            "boost",
-            "upload_media",
-            "timeline",
-            "notifications",
-            "outbox_list",
-            "outbox_enqueue",
-            "outbox_approve",
-            "outbox_publish",
-            "outbox_reject",
-            "accounts_list",
-        ],
+        "operations": OPS,
     }

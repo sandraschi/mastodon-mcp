@@ -15,10 +15,17 @@ serve:
 dev: serve
 
 lint:
-    & "{{UV}}" run ruff check src/
+    & "{{UV}}" run ruff check src tests
+    & "{{UV}}" run ruff format --check src tests
 
 test:
-    & "{{UV}}" run pytest -v tests/
+    & "{{UV}}" run python -m pytest -q tests/
+
+ci:
+    & "{{UV}}" run ruff check src tests
+    & "{{UV}}" run ruff format --check src tests
+    & "{{UV}}" run python -m pytest -q tests/
+    Set-Location "{{REPO}}\\webapp"; npm run check; npm run biome:ci
 
 test-e2e:
     Set-Location "{{REPO}}\\webapp"; npm run test:e2e

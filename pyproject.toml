@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mastodon-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Fediverse (Mastodon) MCP bridge with human-approved outbox for fleet-PR drafts"
 readme = "README.md"
 requires-python = ">=3.12"

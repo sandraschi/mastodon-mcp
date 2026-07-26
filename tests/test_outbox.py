@@ -13,7 +13,7 @@ from mastodon_mcp.outbox import (
 def test_version():
     from mastodon_mcp import __version__
 
-    assert __version__ == "0.1.0"
+    assert __version__ == "0.1.1"
 
 
 def test_enqueue_pending(isolated_data):

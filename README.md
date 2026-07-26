@@ -8,135 +8,83 @@
 
 Fediverse (Mastodon / ActivityPub) bridge for the sandraschi fleet — compose, timelines, and a **human-approved outbox** for promotion drafts from `fleet-public-relations-mcp`.
 
-**v0.1.0** · Private · Ports **10754** / **10755** · Pattern sibling of [discord-mcp](https://github.com/sandraschi/discord-mcp) (10756/10757)
+**v0.1.1** · Private · Ports **10754** / **10755** · Sibling of [discord-mcp](https://github.com/sandraschi/discord-mcp)
 
-> FastMCP 3.4+ · outbox REST · dark webapp · pytest + Playwright e2e · MCPB · Tauri/NSIS scaffold · dry-run default. Reply/boost/media still stubs.
+> FastMCP 3.4+ · full portmanteau (reply/boost/media/webhooks) · SOTA webapp · dry-run default · Windows CI workflow + local `just ci`
 
-> Mastodon = ActivityPub microblogging. **Not** Bluesky (AT Protocol — separate later).
+> Mastodon = ActivityPub. **Not** Bluesky.
 
 ---
 
 ## Principle
 
-Agents draft. Humans approve. Nothing posts without an explicit outbox approve → publish step.
+Agents draft. Humans approve. Nothing posts without outbox approve → publish.
 
-Tone for fleet drafts must follow [`FLEET_PROMOTION.md`](../mcp-central-docs/standards/FLEET_PROMOTION.md): useful pointer, not AI grifter.
-
----
-
-## Architecture (fleet)
-
-```
-scraper-mcp (10998)          grades / readiness
-        │
-fleet-public-relations-mcp   draft release notes + mastodon_payload.json
-        │  queue_fediverse (HTTP handoff — no inline Mastodon API in fleet-PR)
-        ▼
-mastodon-mcp outbox          pending → human approve → publish
-        │
-Mastodon instance API        statuses, media, boosts, replies
-```
+Tone: [`FLEET_PROMOTION.md`](../mcp-central-docs/standards/FLEET_PROMOTION.md).
 
 ---
 
-## Ports
+## Features
 
-| Service | Port | URL |
-|---------|------|-----|
-| Backend (REST + MCP `/mcp`) | **10754** | http://127.0.0.1:10754 |
-| Web dashboard | **10755** | http://127.0.0.1:10755 |
-
-Register in `mcp-central-docs/operations/WEBAPP_PORTS.md` when implementing (10754/10755 free as of 2026-07-26; adjacent to discord-mcp).
-
----
-
-## MCP tools (planned)
-
-### `mastodon_social` portmanteau
-
-| Operation | Role |
-|-----------|------|
-| `post` | Create status (blocked unless dry_run=false **and** outbox-approved path, or explicit interactive compose) |
-| `reply` | Reply to a status |
-| `boost` | Reblog |
-| `upload_media` | Attach media, return media_id |
-| `timeline` | Home / local / public / hashtag |
-| `notifications` | List notifications |
-| `outbox_list` | Pending / approved / published / rejected drafts |
-| `outbox_enqueue` | Accept payload from fleet-PR (`mastodon_payload.json` shape) |
-| `outbox_approve` | Human (or webapp) marks draft ready |
-| `outbox_publish` | POST to instance; default dry_run unless `MASTODON_DRY_RUN=0` |
-| `outbox_reject` | Discard with reason |
-| `accounts_list` | Multi-instance account profiles |
-
-Also: `mastodon_help`, `mastodon_shutdown`, optional Prefab status card.
+- Human-approved outbox + fleet-PR REST handoff
+- Full `mastodon_social` ops: post, reply, boost, media, timelines, notifications, webhooks
+- Dark SOTA webapp: Dashboard, Inbox, Outbox, Compose (AI assist), Chat, Skills, Tools, Settings, Help
+- Dry-run default; inbound webhooks with shared secret
+- Ruff + Biome + pytest gate; Windows-only CI workflow
 
 ---
 
-## Webapp (dark, discord-mcp layout)
-
-| Page | Purpose |
-|------|---------|
-| **Compose** | Manual status + media; still respects dry_run |
-| **Timelines** | Home / local / public |
-| **Outbox** | Fleet-PR drafts — review, edit, approve, publish |
-| **Accounts** | Multi-instance tokens (local SQLite, never commit) |
-| **Settings** | Instance URL, dry_run toggle display, health |
-
----
-
-## Quick start (when implemented)
+## Quick start
 
 ```powershell
 cd D:\Dev\repos\mastodon-mcp
 Copy-Item .env.example .env
 # Edit MASTODON_INSTANCE + MASTODON_ACCESS_TOKEN
-.\start.ps1
+.\start.bat
 ```
 
 Dashboard: http://127.0.0.1:10755 · MCP: http://127.0.0.1:10754/mcp
 
 ---
 
-## Env (see `.env.example`)
+## Documentation
 
-| Variable | Default | Notes |
-|----------|---------|-------|
-| `MASTODON_INSTANCE` | — | e.g. `https://mastodon.social` |
-| `MASTODON_ACCESS_TOKEN` | — | App token with write:statuses |
-| `MASTODON_DRY_RUN` | `1` | Default on — publish logs only |
-| `MASTODON_BACKEND_PORT` | `10754` | |
-| `MASTODON_REQUIRE_OUTBOX_APPROVAL` | `1` | Agent `post` without outbox id rejected |
-
----
-
-## Safety
-
-- Bind `127.0.0.1` only
-- Dry-run default
-- Outbox approve required for fleet-PR payloads
-- No auto-post from fleet-PR or scraper-mcp
-- Rate-limit client-side; respect `429` / `Retry-After`
+| Doc | Contents |
+|-----|----------|
+| [INSTALL.md](INSTALL.md) | Install paths |
+| [docs/ONBOARDING.md](docs/ONBOARDING.md) | First-timer: account, money/CC, pitfalls, sanity check |
+| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | Env vars |
+| [docs/TOOLS.md](docs/TOOLS.md) | MCP + REST reference |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Lint, `just ci`, packaging |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Symptom → fix |
 
 ---
 
-## Tests
+## Ports
+
+| Service | Port |
+|---------|------|
+| Backend | **10754** |
+| Webapp | **10755** |
+
+---
+
+## MCP tools
+
+Portmanteau **`mastodon_social`** — all operations implemented (see [docs/TOOLS.md](docs/TOOLS.md)). Also `mastodon_help`, `mastodon_shutdown`, `show_outbox_card`.
+
+---
+
+## Quality
 
 ```powershell
-uv run pytest tests/ -q          # unit + API e2e (TestClient)
-cd webapp; npm run test:e2e      # Playwright: health, outbox handoff, notifications inbox, Compose UI
+just ci
 ```
 
-Coverage includes fleet-PR inbound payload → outbox → approve → dry-run publish, and notifications inbox (empty under dry-run without tokens).
+Private repos: GitHub Actions stay disabled at account level (billing). Workflow file is still required; run `just ci` locally.
 
 ---
 
-## Packaging / native
+## License
 
-| Artifact | Command |
-|----------|---------|
-| MCPB | `just mcpb-pack` → `dist/mastodon-mcp-v0.1.0.mcpb` |
-| Tauri/NSIS | scaffold in `src-tauri/` — icons + `mastodon-mcp-backend.spec` before `just build-native` |
-| CI | **None** while private (`.nopublish`) |
-
-See [INSTALL.md](INSTALL.md) · [PRD.md](PRD.md) · [llms-full.txt](llms-full.txt).
+MIT (see LICENSE if present)

@@ -42,8 +42,11 @@ test.describe("mastodon-mcp webapp + outbox e2e", () => {
     expect(j.notifications).toEqual([])
   })
 
-  test("Outbox page loads and can enqueue via Compose", async ({ page }) => {
+  test("Dashboard and Outbox pages load; enqueue via Compose", async ({ page }) => {
     await page.goto("/")
+    await expect(page.getByTestId("dashboard")).toBeVisible()
+
+    await page.goto("/outbox")
     await expect(page.getByRole("heading", { name: "Outbox" })).toBeVisible()
 
     await page.goto("/compose")
@@ -52,7 +55,7 @@ test.describe("mastodon-mcp webapp + outbox e2e", () => {
     await page.getByRole("button", { name: /Enqueue to outbox/i }).click()
     await expect(page.locator("pre")).toContainText("pending")
 
-    await page.goto("/")
+    await page.goto("/outbox")
     await expect(page.getByText("Playwright enqueue")).toBeVisible({ timeout: 10_000 })
   })
 })
