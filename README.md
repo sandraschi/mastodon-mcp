@@ -6,19 +6,19 @@
   <a href="https://github.com/PrefectHQ/fastmcp"><img src="https://img.shields.io/badge/FastMCP-3.4%2B-7c5cfc?style=flat-square" alt="FastMCP"></a>
 </p>
 
-Fediverse (Mastodon / ActivityPub) bridge for the sandraschi fleet — compose, timelines, and a **human-approved outbox** for promotion drafts from `fleet-public-relations-mcp`.
+Fediverse **Mastodon client** (ActivityPub) for the sandraschi fleet — full webapp + MCP agent automation, including a **human-approved outbox** for promotion drafts from `fleet-public-relations-mcp`.
 
-**v0.1.1** · Private · Ports **10754** / **10755** · Sibling of [discord-mcp](https://github.com/sandraschi/discord-mcp)
+**v0.1.1** · Private · Ports **10754** / **10755** · Sibling of [discord-mcp](https://github.com/sandraschi/discord-mcp) · AT Proto sibling [bluesky-mcp](https://github.com/sandraschi/bluesky-mcp)
 
 > FastMCP 3.4+ · full portmanteau (reply/boost/media/webhooks) · SOTA webapp · dry-run default · Windows CI workflow + local `just ci`
 
-> Mastodon = ActivityPub. **Not** Bluesky.
+> Mastodon = ActivityPub. **Not** Bluesky. Primer: [docs/FEDIVERSE.md](docs/FEDIVERSE.md).
 
 ---
 
 ## Principle
 
-Agents draft. Humans approve. Nothing posts without outbox approve → publish.
+Agents draft and assist. Humans approve fleet promotion posts. Interactive client use still respects dry-run until you go live.
 
 Tone: [`FLEET_PROMOTION.md`](../mcp-central-docs/standards/FLEET_PROMOTION.md).
 
@@ -26,9 +26,9 @@ Tone: [`FLEET_PROMOTION.md`](../mcp-central-docs/standards/FLEET_PROMOTION.md).
 
 ## Features
 
-- Human-approved outbox + fleet-PR REST handoff
-- Full `mastodon_social` ops: post, reply, boost, media, timelines, notifications, webhooks
-- Dark SOTA webapp: Dashboard, Inbox, Outbox, Compose (AI assist), Chat, Skills, Tools, Settings, Help
+- Full Mastodon web client: Inbox, Timelines, Compose (AI assist), Chat, Accounts, Skills, Tools, Settings, Help
+- Agent automation via `mastodon_social` portmanteau + Prefab cards
+- Human-approved outbox + fleet-PR REST handoff (safety gate — not the only job)
 - Dry-run default; inbound webhooks with shared secret
 - Ruff + Biome + pytest gate; Windows-only CI workflow
 

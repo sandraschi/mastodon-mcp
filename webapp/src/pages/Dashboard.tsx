@@ -108,17 +108,34 @@ function Inner({ backendOk }: { backendOk: boolean | null }) {
         <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">🐘</span>
+              <span className="text-2xl" aria-hidden>
+                🐘
+              </span>
               <span className="text-sm font-medium text-violet-400 tracking-wide">
-                Mastodon MCP
+                mastodon-mcp
               </span>
             </div>
             <h1 className="text-2xl font-bold text-zinc-100 mb-1">
-              Human-approved Fediverse outbox
+              Full Mastodon client + agent automation
             </h1>
-            <p className="text-sm text-zinc-400 max-w-lg">
-              Fleet-PR drafts land here. Review, approve, then publish — dry-run
-              until you are ready for live toots.
+            <p className="text-sm text-zinc-400 max-w-xl">
+              <strong className="text-zinc-300 font-medium">Mastodon</strong> is
+              open social software on the{" "}
+              <strong className="text-zinc-300 font-medium">fediverse</strong>{" "}
+              (ActivityPub — not Bluesky). This app is a full web client (inbox,
+              timelines, compose) plus MCP tools so agents can draft, reply,
+              boost, and assist — with a human-approved outbox for fleet
+              promotion drafts.
+            </p>
+            <p className="text-xs text-zinc-500 mt-2 max-w-xl">
+              New here?{" "}
+              <Link
+                to="/help"
+                className="text-violet-400 hover:text-violet-300 underline-offset-2 hover:underline"
+              >
+                Help → Fediverse
+              </Link>{" "}
+              or docs/FEDIVERSE.md
             </p>
             <div className="flex flex-wrap items-center gap-2 mt-3">
               <span
@@ -137,13 +154,22 @@ function Inner({ backendOk }: { backendOk: boolean | null }) {
               </span>
             </div>
           </div>
-          <Link
-            to="/outbox"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium transition-colors shrink-0"
-            data-testid="hero-cta-outbox"
-          >
-            Open Outbox <ArrowRight size={16} />
-          </Link>
+          <div className="flex flex-col gap-2 shrink-0">
+            <Link
+              to="/compose"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium transition-colors"
+              data-testid="hero-cta-compose"
+            >
+              Compose <ArrowRight size={16} />
+            </Link>
+            <Link
+              to="/outbox"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-zinc-700 hover:border-zinc-500 text-zinc-200 text-sm font-medium transition-colors"
+              data-testid="hero-cta-outbox"
+            >
+              Outbox gate
+            </Link>
+          </div>
         </div>
       </div>
 

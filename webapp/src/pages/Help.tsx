@@ -2,6 +2,7 @@ import { HelpCircle } from "lucide-react";
 import { useState } from "react";
 
 const TABS = [
+  "Fediverse",
   "Architecture",
   "Outbox flow",
   "Safety",
@@ -24,22 +25,46 @@ const S = {
 };
 
 const TAB_CONTENT: Record<Tab, { title: string; html: string }> = {
+  Fediverse: {
+    title: "Fediverse",
+    html: `
+${S.h2("What is Mastodon?")}
+${S.p("Mastodon is free/open microblogging software. You create an account on an instance (a home server). Posts are short statuses — often called toots. You follow people, reply, boost (repost), and upload media.")}
+${S.h2("What is the fediverse?")}
+${S.p("The fediverse is many independent social servers that federate with ActivityPub — like email across providers. Mastodon is the common microblog on that network. Other apps (Pixelfed, PeerTube, …) share the same protocol family.")}
+${S.h2("What this repo is")}
+${S.p("mastodon-mcp is a full-featured Mastodon web client plus MCP server for AI agents — inbox, timelines, compose with AI assist, Chat, Skills, Tools — not merely an outbox widget.")}
+${S.ul([
+  "Webapp client — browse, compose, manage accounts",
+  "Agent automation — mastodon_social portmanteau, Prefab cards, local LLM assist",
+  "Fleet outbox gate — human approve before promotion drafts go live (one safety lane among many)",
+])}
+${S.h2("Not Bluesky")}
+${S.p("Bluesky uses AT Proto, not ActivityPub. Use sibling bluesky-mcp for that network. See docs/FEDIVERSE.md for the longer write-up.")}
+`,
+  },
   Architecture: {
     title: "Architecture",
     html: `
 ${S.h2("Overview")}
-${S.p("mastodon-mcp is a FastMCP bridge to Mastodon (ActivityPub). It sits in the Comms lane of the sandraschi MCP fleet alongside discord-mcp. Primary job: hold a human-approved SQLite outbox for promotion drafts from fleet-public-relations-mcp, then publish when Sandra explicitly approves.")}
+${S.p("mastodon-mcp is a FastMCP + FastAPI Mastodon client for the sandraschi fleet (Comms lane, beside discord-mcp and bluesky-mcp). It exposes a full web UI and agent tools; the human-approved outbox is the safety gate for fleet-PR promotion drafts — not the only feature.")}
 ${S.h2("Components")}
 ${S.ul([
-  `${S.code("server.py")} — FastAPI + FastMCP dual transport (stdio + HTTP /mcp)`,
+  `${S.code("server.py")} — FastAPI + FastMCP (stdio + HTTP /mcp) + REST client APIs`,
+  `${S.code("client.py")} — Mastodon REST (statuses, timelines, notifications, media)`,
   `${S.code("outbox.py")} — SQLite queue: pending → approved → published | rejected`,
-  `${S.code("portmanteau.py")} — mastodon_social unified operations`,
-  `${S.code("webapp/")} — React dashboard on port 10755, proxies /api to 10754`,
+  `${S.code("portmanteau.py")} — mastodon_social unified operations for agents`,
+  `${S.code("webapp/")} — full React client on port 10755 (proxies /api → 10754)`,
 ])}
-${S.h2("Data flow")}
-${S.p("fleet-PR Drafts → POST /api/v1/outbox → webapp Outbox → approve → publish → Mastodon API (or dry-run log). No direct posting from scraper-mcp, CI, or agents without human gate.")}
+${S.h2("Data flows")}
+${S.ul([
+  "Interactive: Inbox / Timelines / Compose ↔ Mastodon API (dry-run until configured + live)",
+  "Agents: MCP tools + Chat / Compose assist via local LLM",
+  "Fleet: fleet-PR → POST /api/v1/outbox → approve → publish",
+])}
 ${S.h2("Docs")}
 ${S.ul([
+  "docs/FEDIVERSE.md — Mastodon / fediverse primer",
   "README.md — install and quick start",
   "PRD.md — requirements and success metrics",
   "llms-full.txt — agent manifest",
@@ -73,8 +98,8 @@ ${S.h2("FLEET_PROMOTION tone")}
 ${S.p("Useful pointer, not hype. Ban: game-changer, 10x, revolution, 'written by AI'. Name the MCP/repo concretely. fleet-PR lints at draft time; Compose assist and Tone Linter chat personality re-check here.")}
 ${S.h2("Private repo")}
 ${S.p("Repo stays private (.nopublish). No GitHub Actions CI on private repos per fleet standards.")}
-${S.h2("No Bluesky here")}
-${S.p("AT Protocol / Bluesky is a separate future repo — do not mix into mastodon-mcp.")}
+${S.h2("Bluesky is separate")}
+${S.p("AT Proto lives in bluesky-mcp — do not paste Bluesky app passwords into Mastodon env vars.")}
 `,
   },
   Ports: {
@@ -156,7 +181,7 @@ ${S.p("uv run pytest tests/ -q and cd webapp; npm run test:e2e — backend must 
 };
 
 export default function Help() {
-  const [tab, setTab] = useState<Tab>("Architecture");
+  const [tab, setTab] = useState<Tab>("Fediverse");
   const content = TAB_CONTENT[tab];
 
   return (
@@ -168,7 +193,7 @@ export default function Help() {
             Help
           </h1>
           <p className="text-zinc-400 text-sm">
-            Mastodon MCP — outbox gate, FLEET_PROMOTION, ports 10754/10755
+            Full Mastodon client + agent MCP — ports 10754/10755
           </p>
         </div>
       </div>

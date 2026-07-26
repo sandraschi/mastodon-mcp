@@ -2,8 +2,13 @@ import { ExternalLink, X } from "lucide-react";
 
 const HELP_ITEMS = [
   {
+    title: "Fediverse primer",
+    desc: "What Mastodon / ActivityPub is — docs/FEDIVERSE.md",
+    href: "https://github.com/sandraschi/mastodon-mcp/blob/master/docs/FEDIVERSE.md",
+  },
+  {
     title: "README",
-    desc: "Install, ports, outbox handoff from fleet-PR",
+    desc: "Install, ports, client + agent features, outbox handoff",
     href: "https://github.com/sandraschi/mastodon-mcp/blob/main/README.md",
   },
   {
@@ -67,11 +72,10 @@ export default function HelpModal({
               Mastodon MCP
             </h3>
             <p className="text-sm text-zinc-400">
-              Private Fediverse bridge for the sandraschi MCP fleet. Holds a
-              human-approved outbox for promotion drafts from
-              fleet-public-relations-mcp, then publishes to Mastodon when
-              approved. Dry-run is the default — nothing hits the fediverse
-              until you flip MASTODON_DRY_RUN and publish.
+              Full Mastodon web client + MCP for agents on the fediverse
+              (ActivityPub). Inbox, timelines, compose with AI assist, and tools
+              — plus a human-approved outbox for fleet-PR promotion drafts.
+              Dry-run by default until you connect an instance and go live.
             </p>
           </div>
 
