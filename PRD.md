@@ -1,7 +1,7 @@
 # mastodon-mcp PRD
 
-**Status:** Implemented (v0.1.1)  
-**Ports:** 10754 backend / 10755 webapp  
+**Status:** Implemented (v0.1.1)
+**Ports:** 10754 backend / 10755 webapp
 **Visibility:** Private (`.nopublish`)
 
 ## Goal
