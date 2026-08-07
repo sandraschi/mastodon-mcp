@@ -8,10 +8,12 @@ import {
   Inbox,
   LayoutDashboard,
   MessageSquare,
+  Moon,
   PenSquare,
   Radio,
   Send,
   Settings,
+  Sun,
   Terminal,
   Users,
   Wrench,
@@ -64,6 +66,26 @@ export default function App() {
   const [backendOk, setBackendOk] = useState<boolean | null>(null);
   const [loggerOpen, setLoggerOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+
+  // EXPERIMENTAL light mode (invert hack). Not fleet standard - see index.css.
+  // Toggling `.dark` off the root flips the invert filter; persisted so the
+  // choice survives reloads. Delete this + the CSS block to revert.
+  const [light, setLight] = useState(() => {
+    try {
+      return localStorage.getItem("mastodon-light-mode") === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", !light);
+    try {
+      localStorage.setItem("mastodon-light-mode", light ? "1" : "0");
+    } catch {
+      // ignore storage errors
+    }
+  }, [light]);
 
   const refresh = useCallback(async () => {
     const h = await checkBackendHealth();
@@ -187,6 +209,15 @@ export default function App() {
 
         <div className="flex-1 flex flex-col min-w-0">
           <header className="flex items-center justify-end gap-2 px-4 py-2 border-b border-zinc-800 bg-zinc-900/50 shrink-0">
+            <button
+              type="button"
+              onClick={() => setLight((v) => !v)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded text-sm text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
+              title={light ? "Switch to dark (experimental light mode)" : "Switch to light (experimental, ugly)"}
+              aria-label="Toggle light mode (experimental)"
+            >
+              {light ? <Moon size={14} /> : <Sun size={14} />}
+            </button>
             <button
               onClick={() => setLoggerOpen(true)}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded text-sm text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
