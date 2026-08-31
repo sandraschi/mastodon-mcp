@@ -1,0 +1,62 @@
+{
+  "product_name": "Mastodon MCP",
+  "install_dir": "%LOCALAPPDATA%\\Mastodon MCP",
+  "operator_exe": "mastodon-mcp-native.exe",
+  "backend_process_names": [
+    "mastodon-mcp-native",
+    "mastodon-mcp-backend"
+  ],
+  "backend_port": 10754,
+  "health_path": "/health",
+  "diagnostics_path": "/api/v1/diagnostics",
+  "feature_smoke_path": "/api/v1/system/info",
+  "window_title_re": "Mastodon MCP",
+  "nsis_glob": "src-tauri/target/release/bundle/nsis/Mastodon MCP_*_x64-setup.exe",
+  "bridge_ok_text": "REST bridge reachable",
+  "uninstall_registry_filter": "*Mastodon MCP*",
+  "frontend_port": 10755,
+  "nav_routes": [
+    [
+      "Dashboard",
+      "Dashboard"
+    ],
+    [
+      "Timelines",
+      "Timelines"
+    ],
+    [
+      "Compose",
+      "Compose"
+    ],
+    [
+      "Inbox",
+      "Inbox"
+    ],
+    [
+      "Outbox",
+      "Outbox"
+    ],
+    [
+      "Accounts",
+      "Accounts"
+    ],
+    [
+      "Tools",
+      "Tools"
+    ],
+    [
+      "Settings",
+      "Settings"
+    ],
+    [
+      "Help",
+      "Help"
+    ]
+  ],
+  "sidebar_click_x": 30,
+  "sidebar_first_y": 90,
+  "sidebar_step_y": 55,
+  "connected_badge_text": "connected",
+  "backend_timeout": 30,
+  "frontend_timeout": 30
+}
