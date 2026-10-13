@@ -1,4 +1,4 @@
-"""mastodon-mcp FastMCP + FastAPI server — ports 10754 (HTTP/MCP)."""
+"""mastodon-mcp FastMCP + FastAPI server - ports 10754 (HTTP/MCP)."""
 
 from __future__ import annotations
 
@@ -44,7 +44,7 @@ async def mastodon_outbox_prompt() -> str:
         "Use mastodon_social_tool outbox_enqueue for fleet-PR payloads.\n"
         "Never publish without human outbox_approve.\n"
         "Respect MASTODON_DRY_RUN=1 unless explicitly told to go live.\n"
-        "Tone: FLEET_PROMOTION.md — useful pointer, no hype, no 'written by AI'."
+        "Tone: FLEET_PROMOTION.md - useful pointer, no hype, no 'written by AI'."
     )
 
 
@@ -59,7 +59,7 @@ async def mastodon_social_tool(
     dry_run: bool | None = None,
     payload: dict[str, Any] | None = None,
 ) -> dict:
-    """Portmanteau: post/timeline/outbox_* — fleet drafts use outbox_enqueue → approve → publish."""
+    """Portmanteau: post/timeline/outbox_* - fleet drafts use outbox_enqueue → approve → publish."""
     return await mastodon_social(
         operation=operation,
         status_text=status_text,
@@ -105,7 +105,7 @@ async def show_outbox_card() -> dict:
             "prefab": False,
             "pending": pending,
             "total": len(items),
-            "message": "prefab-ui not installed — raw summary",
+            "message": "prefab-ui not installed - raw summary",
         }
 
     items = outbox.list_items()
@@ -114,7 +114,7 @@ async def show_outbox_card() -> dict:
     with app:
         Heading("Outbox", level=2)
         Text(f"{len(pending)} pending · {len(items)} total")
-        Muted("Dry-run default — approve then publish")
+        Muted("Dry-run default - approve then publish")
         for row in pending[:8]:
             with Card(), CardContent():
                 Badge(row.get("repo_id") or "manual", color="violet")
@@ -285,7 +285,7 @@ class ComposeAssistBody(BaseModel):
 
 @app.post("/api/compose/assist")
 async def api_compose_assist(body: ComposeAssistBody):
-    """AI-assisted compose — returns suggested status text (local LLM)."""
+    """AI-assisted compose - returns suggested status text (local LLM)."""
     skill = ""
     skill_path = Path(__file__).parent / "skills" / "mastodon-outbox" / "SKILL.md"
     if skill_path.is_file():
@@ -385,7 +385,7 @@ async def api_webhook_inbound(
     body: WebhookInboundBody,
     x_mastodon_webhook_secret: str | None = Header(default=None),
 ):
-    """Fleet inbound webhook — set MASTODON_WEBHOOK_SECRET; header X-Mastodon-Webhook-Secret."""
+    """Fleet inbound webhook - set MASTODON_WEBHOOK_SECRET; header X-Mastodon-Webhook-Secret."""
     if not webhooks.verify_secret(x_mastodon_webhook_secret):
         return {"success": False, "error": "invalid or missing webhook secret"}
     payload = (

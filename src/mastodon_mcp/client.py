@@ -1,4 +1,4 @@
-"""Thin Mastodon REST client — always respects dry_run."""
+"""Thin Mastodon REST client - always respects dry_run."""
 
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ async def create_status(
         return {
             "success": True,
             "dry_run": True,
-            "message": "dry_run — not posted",
+            "message": "dry_run - not posted",
             "status_text": status_text,
             "visibility": visibility,
             "in_reply_to_id": in_reply_to_id,
@@ -115,7 +115,7 @@ async def boost_status(
         return {
             "success": True,
             "dry_run": True,
-            "message": "dry_run — boost not sent",
+            "message": "dry_run - boost not sent",
             "status_id": status_id,
             "id": "dry-run-boost",
         }
@@ -155,7 +155,7 @@ async def upload_media(
         return {
             "success": True,
             "dry_run": True,
-            "message": "dry_run — media not uploaded",
+            "message": "dry_run - media not uploaded",
             "path": str(file_path),
             "id": "dry-run-media",
             "description": description,
@@ -207,7 +207,7 @@ async def get_notifications(limit: int = 20) -> dict[str, Any]:
             "success": True,
             "dry_run": True,
             "notifications": [],
-            "message": "dry_run — notifications inbox empty without credentials",
+            "message": "dry_run - notifications inbox empty without credentials",
         }
     if not cfg.instance or not cfg.access_token:
         return {"success": False, "error": "not configured"}
@@ -247,14 +247,14 @@ async def get_timeline(timeline: str = "home", limit: int = 20) -> dict[str, Any
 
 
 async def push_subscription_get() -> dict[str, Any]:
-    """GET /api/v1/push/subscription — Web Push subscription if configured on instance."""
+    """GET /api/v1/push/subscription - Web Push subscription if configured on instance."""
     cfg = get_settings()
     if cfg.dry_run and (not cfg.instance or not cfg.access_token):
         return {
             "success": True,
             "dry_run": True,
             "subscription": None,
-            "message": "dry_run — no push subscription without credentials",
+            "message": "dry_run - no push subscription without credentials",
         }
     err = _configured()
     if err:

@@ -1,4 +1,4 @@
-"""mastodon_social portmanteau tool — full ops, no planned stubs."""
+"""mastodon_social portmanteau tool - full ops, no planned stubs."""
 
 from __future__ import annotations
 
@@ -91,7 +91,7 @@ async def mastodon_social(
             outbox.mark_published(outbox_id, str(result.get("id", "")))
         elif result.get("success") and result.get("dry_run"):
             result["message"] = (
-                "dry_run publish OK — set MASTODON_DRY_RUN=0 to post for real after approve"
+                "dry_run publish OK - set MASTODON_DRY_RUN=0 to post for real after approve"
             )
         return result
 
@@ -100,7 +100,7 @@ async def mastodon_social(
             return {
                 "success": False,
                 "error": (
-                    "direct post blocked — enqueue to outbox, approve, then outbox_publish "
+                    "direct post blocked - enqueue to outbox, approve, then outbox_publish "
                     "(or set MASTODON_REQUIRE_OUTBOX_APPROVAL=0 for interactive compose)"
                 ),
             }
